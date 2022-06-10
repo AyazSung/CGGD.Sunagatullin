@@ -240,14 +240,14 @@ namespace cg::renderer
 			if (payload.t > min_t && payload.t < closest_hit_payload.t)
 			{
 				closest_hit_payload = payload;
-				closest_triangle& triangle;
+				closest_triangle = &triangle;
 			}
 		}
 
 		if (closest_hit_payload.t < max_t)
 		{
 			if (closest_hit_shader)
-				return closest_hit_shader(ray, closest_hit_payload, closest_triangle, depth);
+				return closest_hit_shader(ray, closest_hit_payload, *closest_triangle, depth);
 		}
 
 		return miss_shader(ray);
@@ -292,6 +292,7 @@ namespace cg::renderer
 	float2 raytracer<VB, RT>::get_jitter(int frame_id)
 	{
 		// TODO: Lab 2.06. Implement `get_jitter` method of `raytracer` class
+		return float2{};
 	}
 
 
