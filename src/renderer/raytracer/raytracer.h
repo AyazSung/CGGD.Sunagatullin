@@ -171,6 +171,7 @@ namespace cg::renderer
 
 
 
+
 		// TODO: Lab 2.06. Add `history` resource in `raytracer` class
 		// TODO: Lab 2.06. Implement TAA in `ray_generation` method of `raytracer` class
 	}
