@@ -61,9 +61,9 @@ namespace cg::renderer
 		ba = b - a;
 		ca = c - a;
 
-		na = float3{vertex_a.x, vertex_a.y, vertex_a.z};
-		nb = float3{vertex_b.x, vertex_b.y, vertex_b.z};
-		nc = float3{vertex_c.x, vertex_c.y, vertex_c.z};
+		na = float3{vertex_a.nx, vertex_a.ny, vertex_a.nz};
+		nb = float3{vertex_b.nx, vertex_b.ny, vertex_b.nz};
+		nc = float3{vertex_c.nx, vertex_c.ny, vertex_c.nz};
 
 
 		ambient = {vertex_a.ambient_r, vertex_a.ambient_g, vertex_a.ambient_b};
@@ -170,6 +170,7 @@ namespace cg::renderer
 			auto& index_buffer = index_buffers[shape_id];
 			auto& vertex_buffer = vertex_buffers[shape_id];
 			size_t index_id = 0;
+			aabb<VB> aabb;
 			while (index_id < index_buffer->get_number_of_elements())
 			{
 
@@ -178,8 +179,9 @@ namespace cg::renderer
 						vertex_buffer->item(index_buffer->item(index_id++)),
 						vertex_buffer->item(index_buffer->item(index_id++)));
 
-				triangles.push_back(triangle);
+				aabb.add_triangle(triangle);
 			}
+			acceleration_structures.push_back(aabb);
 		}
 	}
 
@@ -241,6 +243,9 @@ namespace cg::renderer
 			{
 				closest_hit_payload = payload;
 				closest_triangle = &triangle;
+
+				if (any_hit_shader)
+					return any_hit_shader(ray, payload, triangle);
 			}
 		}
 
@@ -278,7 +283,7 @@ namespace cg::renderer
 
 		float3 qvec = cross(tvec, triangle.ba);
 		float v = dot(ray.direction, qvec) * inv_det;
-		if (u < 0.f || u + v > 1.f)
+		if (v < 0.f || u + v > 1.f)
 			return payload;
 
 		payload.t = dot(triangle.ca, qvec) * inv_det;
@@ -299,19 +304,34 @@ namespace cg::renderer
 	template<typename VB>
 	inline void aabb<VB>::add_triangle(const triangle<VB> triangle)
 	{
-		// TODO: Lab 2.05. Implement aabb class
+		if (triangles.empty())
+			aabb_max = aabb_min = triangle.a;
+
+		triangles.push_back(triangle);
+		aabb_max = max(aabb_max, triangle.a);
+		aabb_max = max(aabb_max, triangle.b);
+		aabb_max = max(aabb_max, triangle.b);
+
+		aabb_min = min(aabb_min, triangle.a);
+		aabb_min = min(aabb_min, triangle.b);
+		aabb_min = min(aabb_min, triangle.b);
 	}
 
 	template<typename VB>
 	inline const std::vector<triangle<VB>>& aabb<VB>::get_triangles() const
 	{
-		// TODO: Lab 2.05. Implement aabb class
+		return triangles;
 	}
 
 	template<typename VB>
 	inline bool aabb<VB>::aabb_test(const ray& ray) const
 	{
-		// TODO: Lab 2.05. Implement aabb class
+		float3 inv_ray_direction = float3(1.f) / ray.direction;
+		float3 t0 = (aabb_max - ray.position) * inv_ray_direction;
+		float3 t1 = (aabb_min - ray.position) * inv_ray_direction;
+		float3 tmax = max(t0, t1);
+		float3 tmin = min(t0, t1);
+		return maxelem(tmin) <= maxelem(tmax);
 	}
 
 }// namespace cg::renderer

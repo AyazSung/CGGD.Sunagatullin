@@ -181,7 +181,6 @@ namespace cg::renderer
 	}
 
 
-
 	template<typename VB, typename RT>
 	inline float
 	rasterizer<VB, RT>::edge_function(float2 a, float2 b, float2 c)
