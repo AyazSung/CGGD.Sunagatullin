@@ -19,7 +19,7 @@ int cg::utils::window::run(cg::renderer::renderer* renderer, HINSTANCE hinstance
 	window_class.style = CS_HREDRAW | CS_VREDRAW;
 	window_class.lpfnWndProc = window_proc;
 	window_class.hInstance = hinstance;
-	window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+	window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	window_class.lpszClassName = L"DXSampleClass";
 	RegisterClassEx(&window_class);
 
@@ -39,7 +39,7 @@ int cg::utils::window::run(cg::renderer::renderer* renderer, HINSTANCE hinstance
 	MSG msg = {};
 	while (msg.message != WM_QUIT)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -53,14 +53,14 @@ int cg::utils::window::run(cg::renderer::renderer* renderer, HINSTANCE hinstance
 
 LRESULT cg::utils::window::window_proc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
-	cg::renderer::renderer* renderer = reinterpret_cast<cg::renderer::renderer*>(
+	auto* renderer = reinterpret_cast<cg::renderer::renderer*>(
 			GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
 	switch (message)
 	{
 		case WM_CREATE: {
 			// Save the Renderer* passed in to CreateWindow.
-			LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lparam);
+			auto pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lparam);
 			SetWindowLongPtr(
 					hwnd, GWLP_USERDATA,
 					reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
