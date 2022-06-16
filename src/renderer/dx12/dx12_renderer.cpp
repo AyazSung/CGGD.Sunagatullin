@@ -223,3 +223,4 @@ ID3D12DescriptorHeap* cg::renderer::descriptor_heap::get() const
 {
 	// TODO Lab 3.04. Implement `create_heap`, `get_cpu_descriptor_handle`, `get_gpu_descriptor_handle`, and `get` methods of `cg::renderer::descriptor_heap`
 }
+cg::renderer::constant_buffer::constant_buffer(const DirectX::XMMATRIX& mwpMatrix) : mwpMatrix(mwpMatrix) {}

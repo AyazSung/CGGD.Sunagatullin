@@ -28,6 +28,7 @@ namespace cg::renderer
 	};
 	struct constant_buffer
 	{
+		constant_buffer(const DirectX::XMMATRIX& mwpMatrix);
 		DirectX::XMMATRIX mwpMatrix;
 		light light;
 	};
