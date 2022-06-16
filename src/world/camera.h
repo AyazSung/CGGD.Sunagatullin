@@ -46,6 +46,7 @@ namespace cg::world
 		float theta;
 		float phi;
 
+
 		float height;
 		float width;
 		float aspect_ratio;
