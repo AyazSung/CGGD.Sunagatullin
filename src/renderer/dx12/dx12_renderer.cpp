@@ -128,6 +128,11 @@ void cg::renderer::dx12_renderer::create_render_target_views()
 {
 	// TODO Lab 3.04. Create a descriptor heap for render targets
 	// TODO Lab 3.04. Create render target views
+
+	rtv_heap.create_heap(
+			device,
+			D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
+			frame_number);
 }
 
 void cg::renderer::dx12_renderer::create_depth_buffer()
