@@ -57,7 +57,14 @@ void cg::renderer::dx12_renderer::update()
 
 void cg::renderer::dx12_renderer::render()
 {
-	// TODO Lab 3.06. Implement `render` method
+	populate_command_list();
+	ID3D12CommandList* command_lists[] = {command_list.Get()};
+	command_queue->ExecuteCommandLists(
+			_countof(command_lists),
+			command_lists);
+
+	THROW_IF_FAILED(swap_chain->Present(0, 0))
+	move_to_next_frame();
 }
 
 ComPtr<IDXGIFactory4> cg::renderer::dx12_renderer::get_dxgi_factory()
@@ -532,6 +539,14 @@ void cg::renderer::dx12_renderer::load_assets()
 	// TODO Lab 3.04. Create a constant buffer view
 
 	create_constant_buffer_view(constant_buffer, cbv_srv_heap.get_cpu_descriptor_handle(0));
+
+	THROW_IF_FAILED(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)))
+	fence_event = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+	if (fence_event == nullptr)
+	{
+		THROW_IF_FAILED(HRESULT_FROM_WIN32(GetLastError()))
+	}
+	//wait_for_gpu();
 }
 
 
@@ -608,7 +623,18 @@ void cg::renderer::dx12_renderer::move_to_next_frame()
 
 void cg::renderer::dx12_renderer::wait_for_gpu()
 {
-	// TODO Lab 3.07. Implement `wait_for_gpu` method
+	THROW_IF_FAILED(
+			command_queue->Signal(
+					fence.Get(),
+					fence_values[frame_index]))
+
+	THROW_IF_FAILED(
+			fence->SetEventOnCompletion(
+					fence_values[frame_index],
+					fence_event))
+
+	WaitForSingleObjectEx(fence_event, INFINITE, FALSE);
+	fence_values[frame_index]++;
 }
 
 
