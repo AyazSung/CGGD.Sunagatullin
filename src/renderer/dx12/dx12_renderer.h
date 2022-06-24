@@ -92,7 +92,8 @@ namespace cg::renderer
 		ComPtr<ID3D12Resource> constant_buffer;
 		UINT8* constant_buffer_data_begin;
 
-		cg::renderer::constant_buffer cb{};
+		///// CORRECTION
+		cg::renderer::constant_buffer cb;
 
 		// Synchronization objects.
 		UINT frame_index;
