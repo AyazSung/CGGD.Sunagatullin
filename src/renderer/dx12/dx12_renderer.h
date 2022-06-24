@@ -28,7 +28,6 @@ namespace cg::renderer
 	};
 	struct constant_buffer
 	{
-		constant_buffer(const DirectX::XMMATRIX& mwpMatrix);
 		DirectX::XMMATRIX mwpMatrix;
 		light light;
 	};
@@ -92,8 +91,7 @@ namespace cg::renderer
 		ComPtr<ID3D12Resource> constant_buffer;
 		UINT8* constant_buffer_data_begin;
 
-		///// CORRECTION
-		cg::renderer::constant_buffer cb;
+		cg::renderer::constant_buffer cb{};
 
 		// Synchronization objects.
 		UINT frame_index;
